@@ -1,7 +1,8 @@
 import streamlit as st
-
 from multi_page import MultiPage
-from pages import cocomo, other_page, project_start
+from pages import cocomo
+from pages import other_page
+from pages import project_start
 
 
 def main():

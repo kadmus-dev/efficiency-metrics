@@ -1,8 +1,7 @@
-from sched import scheduler
-import streamlit as st
-import plotly.express as px
-import pandas as pd
 from collections import defaultdict
+import pandas as pd
+import plotly.express as px
+import streamlit as st
 
 
 def app():
@@ -37,7 +36,6 @@ def app():
                                   step=1)
     proj_data['num_workers'] = num_workers
 
-
     st.markdown('# Данные участников проекта')
     res = st.selectbox(label='Загрузите таблицу с данными об участниках проекта или введите их вручную',
                        options=['Загрузить таблицу', 'Ручной ввод'])
@@ -70,7 +68,8 @@ def app():
             strings = dataframe.split('\n')
             for string in strings:
                 if len(string.split(',')) == 7:
-                    name, pos, department, hpw, exp, age, diff = string.split(',')
+                    name, pos, department, hpw, exp, age, diff = string.split(
+                        ',')
                     workers_data['name'].append(name)
                     workers_data['position'].append(pos)
                     workers_data['department'].append(department)
@@ -96,10 +95,12 @@ def app():
     if workers_data:
         st.markdown(f'## {plot_type}')
         if plot_type == plot_types['type1']:
-            fig = px.bar(pd.DataFrame(workers_data), x='department', color='department')
+            fig = px.bar(pd.DataFrame(workers_data),
+                         x='department', color='department')
             st.plotly_chart(fig)
         elif plot_type == plot_types['type2']:
-            fig = px.bar(pd.DataFrame(workers_data), x='position', color='position')
+            fig = px.bar(pd.DataFrame(workers_data),
+                         x='position', color='position')
             st.plotly_chart(fig)
         elif plot_type == plot_types['type3']:
             fig = px.scatter(pd.DataFrame(workers_data),
@@ -117,6 +118,8 @@ def app():
                              symbol='name')
             fig.update_traces(marker_size=15)
             st.plotly_chart(fig)
+
+    return proj_data, workers_data
 
 
 if __name__ == '__main__':
