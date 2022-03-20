@@ -2,6 +2,9 @@ import math
 import sqlite3
 import streamlit as st
 import json
+import pandas as pd
+from ml_pred import predict
+
 
 # constants
 DB_PATH = "./databases/data.db"
@@ -279,11 +282,16 @@ def app():
     laboriousness = math.prod(laboriousness_coefs)
     metric_value = a * kloc ** b * laboriousness
     st.metric("Трудоемкость (в человеко-месяцах)", metric_value)
+
     with open('config.json') as f:
         config = json.load(f)
     config['cocomo'] = metric_value
     with open('config.json', 'w') as f:
         json.dump(config, f)
+
+    st.markdown("## Предсказание искусственного интеллекта")
+    data = pd.DataFrame().from_dict(db_record, orient='index').T
+    st.metric("Трудоемкость (в человеко-днях)", float(predict(data)[0]))
 
 
 if __name__ == '__main__':

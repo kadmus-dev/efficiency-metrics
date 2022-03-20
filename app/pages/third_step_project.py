@@ -3,6 +3,8 @@ import plotly.express as px
 import streamlit as st
 import json
 from jira_workflow import JiraWorkflow
+import sqlite3
+from os import path
 
 def get_parser():
     with open('config.json') as f:
@@ -54,7 +56,9 @@ def translate(s):
 
 
 def app():
-    st.markdown("# 3 этап для проектов")
+    st.markdown("# Итоги по проекту")
+
+    proj_id = st.selectbox("ID проекта", projects_database["id"])
 
     jira_parser = get_parser()
     if jira_parser is not None:
@@ -71,8 +75,6 @@ def app():
         labor_costs = st.number_input("Трудозатраты, человеко-дни", min_value=0)
         delay = st.number_input("Опоздание, часы", min_value=0)
 
-
-    proj_id = st.selectbox("ID проекта", projects_database["id"])
     project_n = projects_database[projects_database["id"]
                                     == proj_id].index[0]
 
@@ -95,6 +97,12 @@ def app():
         projects_database.iloc[project_n].loc["labor_costs"] = labor_costs
         projects_database.iloc[project_n].loc["team_rate"] = team_rate
         projects_database.iloc[project_n].loc["delay"] = delay
+        conn = sqlite3.connect(path.join("databases", "data.db"))
+        cur = conn.cursor()
+        cur.execute('UPDATE projects SET (%s) = (%s) WHERE id = (SELECT COUNT(*) FROM projects)' % (
+        "labor_costs", ":labor_costs"),
+                    {'labor_costs': labor_costs})
+        conn.commit()
 
     X_name = st.selectbox("Axis X", ["Затраты на хостинг",
                                         "Количество людей, покинувших проект",
@@ -115,12 +123,13 @@ def app():
                                         "Опоздание"])
 
     plot_data = pd.DataFrame({X_name: projects_database[translate(X_name)],
-                                Y_name: projects_database[translate(X_name)],
+                                Y_name: projects_database[translate(Y_name)],
                                 "ID": projects_database["id"]}).dropna()
 
+    color = st.color_picker("Выбор цвета точек")
     result_plot = px.scatter(
         plot_data, x=X_name, y=Y_name, hover_data=["ID"])
-    result_plot.update_traces(marker={'size': 12})
+    result_plot.update_traces(marker={'size': 12, "color" : color})
     st.plotly_chart(result_plot)
 
 
