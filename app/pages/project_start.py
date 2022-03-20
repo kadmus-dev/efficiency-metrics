@@ -7,23 +7,8 @@ import streamlit as st
 def app():
     proj_data = {}
     st.markdown('# Параметры проекта')
-    project_name = st.text_input(label='ID проекта')
+    project_name = st.text_input(label='Название проекта')
     proj_data['project_name'] = project_name
-
-    client_coverage = st.number_input(label='Охват клиентуры, тыс. человек',
-                                      help='Введите количество человек в тыс., которое будет пользоваться конечным продуктом',
-                                      min_value=0, step=1)
-    proj_data['clients'] = client_coverage
-
-    environmental = st.slider(label='Уровень экологичности проекта',
-                              min_value=1,
-                              max_value=5)
-    proj_data['environmental'] = environmental
-
-    num_servers = st.number_input('Количество серверов',
-                                  min_value=0,
-                                  step=1)
-    proj_data['num_servers'] = num_servers
 
     planned_time = st.number_input(label='Планируемое время, которое будет затрачено на проект',
                                    help='в неделях',
@@ -35,6 +20,38 @@ def app():
                                   min_value=1,
                                   step=1)
     proj_data['num_workers'] = num_workers
+
+    additional_metrics = {'m1': 'Охват клиентуры, тыс. человек',
+                          'm2': 'Уровень экологичности проекта',
+                          'm3': 'Количество серверов'}
+
+    ops = st.multiselect(label='Выберите дополнительные параметры',
+                         options=[additional_metrics['m1'],
+                                  additional_metrics['m2'],
+                                  additional_metrics['m3']])
+
+    proj_data['clients'] = None
+    proj_data['environmental'] = None
+    proj_data['num_servers'] = None
+    if additional_metrics['m1'] in ops:
+        client_coverage = st.number_input(label=additional_metrics['m1'],
+                                          help='Введите количество человек в тыс., которое будет пользоваться конечным продуктом',
+                                          min_value=0,
+                                          step=1)
+        proj_data['clients'] = client_coverage
+
+    if additional_metrics['m2'] in ops:
+        environmental = st.slider(label=additional_metrics['m2'],
+                                min_value=1,
+                                max_value=5)
+        proj_data['environmental'] = environmental
+
+    if additional_metrics['m3'] in ops:
+        num_servers = st.number_input(label=additional_metrics['m3'],
+                                      min_value=0,
+                                      step=1)
+        proj_data['num_servers'] = num_servers
+
 
     st.markdown('# Данные участников проекта')
     res = st.selectbox(label='Загрузите таблицу с данными об участниках проекта или введите их вручную',
@@ -79,7 +96,8 @@ def app():
                     workers_data['hours_per_week'].append(hpw)
 
     st.write(proj_data)
-    st.write(pd.DataFrame(workers_data))
+    if workers_data:
+        st.write(pd.DataFrame(workers_data))
 
     plot_types = {'type1': 'Количество людей в каждом отделе',
                   'type2': 'Количество людей на каждой должности',
