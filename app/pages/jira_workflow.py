@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 
 
-class JiraWorkflow(object):
+class JiraWorkflow:
     issue_types = {'10000': 'Epic', '10004': 'Task', '10005': 'Story', '10006': 'Epic', '10007': 'Subtask'}
 
     def __init__(self, nickname: str, email: str, token: str, project: str):
