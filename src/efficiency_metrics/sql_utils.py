@@ -1,9 +1,13 @@
 import pandas as pd
 
 
+DB_PATH = "databases/data.db"
+
+
 def get_df(database_connection, query_str: str) -> pd.DataFrame:
     """
     Return SQLite query as pandas DataFrame
+
     :param database_connection: sqlite3.Connection
     :param query_str: query string
     :return: result dataframe

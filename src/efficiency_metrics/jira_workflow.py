@@ -7,12 +7,15 @@ import requests
 
 
 class JiraWorkflow:
-    issue_types = {'10000': 'Epic', '10004': 'Task', '10005': 'Story', '10006': 'Epic', '10007': 'Subtask'}
+    issue_types = {'10000': 'Epic', '10004': 'Task',
+                   '10005': 'Story', '10006': 'Epic', '10007': 'Subtask'}
 
     def __init__(self, nickname: str, email: str, token: str, project: str):
         self.url = f"https://{nickname}.atlassian.net/rest/api/2/search?jql=project={project}"
-        auth_header = b64encode(f'{email}:{token}'.encode('ascii')).decode('ascii')
-        self.headers = {'Authorization': f'Basic {auth_header}', 'Accept': 'application/json'}
+        auth_header = b64encode(
+            f'{email}:{token}'.encode('ascii')).decode('ascii')
+        self.headers = {'Authorization': f'Basic {auth_header}',
+                        'Accept': 'application/json'}
         self.issues = None
 
     def get_data(self) -> None:
@@ -22,6 +25,13 @@ class JiraWorkflow:
 
         resp = requests.get(self.url, headers=self.headers)
         self.issues = json.loads(resp.content.decode('utf-8'))
+
+    def empty(self) -> bool:
+        """
+        Check if data retrieval was unsuccessful.
+        """
+
+        return len(self.issues) < 5
 
     def type_count(self) -> dict:
         """
@@ -68,19 +78,23 @@ class JiraWorkflow:
             time_estimate = None
             if issue['fields']['timeestimate'] is not None:
                 if issue['fields']['timeoriginalestimate'] is not None:
-                    time_estimate = max(issue['fields']['timeestimate'], issue['fields']['timeoriginalestimate'])
+                    time_estimate = max(
+                        issue['fields']['timeestimate'], issue['fields']['timeoriginalestimate'])
                 else:
                     time_estimate = issue['fields']['timeestimate']
             elif issue['fields']['timeoriginalestimate'] is not None:
                 time_estimate = issue['fields']['timeoriginalestimate']
 
             if time_estimate is not None and issue['fields']['timespent'] is not None:
-                total_delay_minutes += (issue['fields']['timespent'] - time_estimate) // 60
+                total_delay_minutes += (issue['fields']
+                                        ['timespent'] - time_estimate) // 60
                 continue
 
             if issue['fields']['duedate'] is not None:
-                duedate = datetime.strptime(issue['fields']['duedate'], '%Y-%m-%d')
-                resolutiondate = datetime.strptime(issue['fields']['resolutiondate'][:-9], '%Y-%m-%dT%H:%M:%S')
+                duedate = datetime.strptime(
+                    issue['fields']['duedate'], '%Y-%m-%d')
+                resolutiondate = datetime.strptime(
+                    issue['fields']['resolutiondate'][:-9], '%Y-%m-%dT%H:%M:%S')
                 diff = resolutiondate - duedate
                 total_delay_minutes += diff.days * 1440 + diff.seconds // 60
 
@@ -104,9 +118,11 @@ class JiraWorkflow:
                 total_spent_minutes += issue['fields']['timespent'] // 60
                 continue
 
-            created = datetime.strptime(issue['fields']['created'][:-9], '%Y-%m-%dT%H:%M:%S')
+            created = datetime.strptime(
+                issue['fields']['created'][:-9], '%Y-%m-%dT%H:%M:%S')
             if issue['fields']['resolutiondate'] is not None:
-                resolutiondate = datetime.strptime(issue['fields']['resolutiondate'][:-9], '%Y-%m-%dT%H:%M:%S')
+                resolutiondate = datetime.strptime(
+                    issue['fields']['resolutiondate'][:-9], '%Y-%m-%dT%H:%M:%S')
                 curr_timedelta = resolutiondate - created
             else:
                 curr_timedelta = datetime.now() - created

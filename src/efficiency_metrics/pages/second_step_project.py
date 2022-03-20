@@ -1,29 +1,7 @@
 import streamlit as st
-from jira_workflow import JiraWorkflow
-import json
+from efficiency_metrics.config import get_cocomo
+from efficiency_metrics.config import get_parser
 
-
-def get_parser():
-    with open('config.json') as f:
-        config = json.load(f)
-    if config['nickname'] is None:
-        return None
-    jira_parser = JiraWorkflow(config['nickname'],
-                               config['email'],
-                               config['token'],
-                               config['project'])
-    try:
-        jira_parser.get_data()
-        jira_parser.type_count()
-        return jira_parser
-    except:
-        return None
-
-
-def get_cocomo():
-    with open('config.json') as f:
-        config = json.load(f)
-        return config['cocomo']
 
 def app():
     proj_stage = st.slider(label='Готовность проекта по времени, %',
@@ -39,19 +17,19 @@ def app():
     else:
         st.markdown('## Данные берутся из Jira')
         jira_parser.get_data()
-        costs = jira_parser.spent_minutes() / (24*60)
-        delay = jira_parser.delay_minutes() / (60)
+        costs = jira_parser.spent_minutes() / (24 * 60)
+        delay = jira_parser.delay_minutes() / 60
         st.metric('Просрок по роекту, ч',
                   value=delay)
 
-    estimated_costs = costs*100/proj_stage
+    estimated_costs = costs * 100 / proj_stage
     st.metric('Предполагаемые затраты на весь проект, человеко-дни',
-                value=estimated_costs)
+              value=estimated_costs)
     cocomo = get_cocomo()
     if cocomo is not None:
-        efficiency = 100*(cocomo / estimated_costs)
+        efficiency = 100 * (cocomo / estimated_costs)
         st.metric('Текущая эффективность проекта, %',
-                    value=efficiency)
+                  value=efficiency)
 
 
 if __name__ == '__main__':

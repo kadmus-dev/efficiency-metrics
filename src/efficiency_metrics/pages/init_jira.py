@@ -1,6 +1,5 @@
 import streamlit as st
-from jira_workflow import JiraWorkflow
-import json
+from efficiency_metrics.config import write_parser
 
 
 def app():
@@ -13,14 +12,7 @@ def app():
 
     if nickname and email and token and project:
         st.markdown('# Jira initialized!')
-        with open('config.json') as f:
-            config = json.load(f)
-        config['nickname'] = nickname
-        config['email'] = email
-        config['token'] = token
-        config['project'] = project
-        with open('config.json', 'w') as f:
-            json.dump(config, f)
+        write_parser(nickname, email, token, project)
 
 
 if __name__ == '__main__':

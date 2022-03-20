@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -42,8 +43,8 @@ def app():
 
     if additional_metrics['m2'] in ops:
         environmental = st.slider(label=additional_metrics['m2'],
-                                min_value=1,
-                                max_value=5)
+                                  min_value=1,
+                                  max_value=5)
         proj_data['environmental'] = environmental
 
     if additional_metrics['m3'] in ops:
@@ -51,7 +52,6 @@ def app():
                                       min_value=0,
                                       step=1)
         proj_data['num_servers'] = num_servers
-
 
     st.markdown('# Данные участников проекта')
     res = st.selectbox(label='Загрузите таблицу с данными об участниках проекта или введите их вручную',
@@ -61,7 +61,7 @@ def app():
 
     if res == 'Загрузить таблицу':
         dataframe = st.file_uploader(label='Таблица с данными об участниках проекта. Столбцы: '
-                                     'ФИО, Должность, Отдел, Часов в неделю, Опыт работы, Возраст, Ожидаемая сложность задач',
+                                           'ФИО, Должность, Отдел, Часов в неделю, Опыт работы, Возраст, Ожидаемая сложность задач',
                                      type=['csv'],
                                      help='Опыт работы в годах, сложность задач от 1 до 10.')
         if dataframe is not None:
@@ -78,7 +78,7 @@ def app():
 
     elif res == 'Ручной ввод':
         dataframe = st.text_area(label='Ввод информации по каждому сотруднику: ФИО, должность, '
-                                 'отдел, количество часов в неделю на работу, опыт работы (лет), возраст,ожидаемая сложность задач (от 1 до 10)',
+                                       'отдел, количество часов в неделю на работу, опыт работы (лет), возраст,ожидаемая сложность задач (от 1 до 10)',
                                  help='Через запятую перечисление полей, каждый новый сотрудник с новой строки.\n')
         if len(dataframe) > 0:
             strings = dataframe.split('\n')

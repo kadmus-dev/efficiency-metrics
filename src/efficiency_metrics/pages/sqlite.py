@@ -1,10 +1,8 @@
 import sqlite3
+
 import streamlit as st
-
-from sql_utils import get_df
-
-# constants
-DB_PATH = "./databases/data.db"
+from efficiency_metrics.sql_utils import DB_PATH
+from efficiency_metrics.sql_utils import get_df
 
 
 def app():

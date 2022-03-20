@@ -1,14 +1,12 @@
-import sys
-import os
-
-sys.path.append(os.path.join(os.getcwd(), 'pages'))
-
 import streamlit as st
-from multi_page import MultiPage
-from pages import cocomo, sqlite, project_start, second_step_project
-from pages import third_step_project
-from pages import third_step_staff
-from pages import init_jira
+from efficiency_metrics.multi_page import MultiPage
+from efficiency_metrics.pages import cocomo
+from efficiency_metrics.pages import init_jira
+from efficiency_metrics.pages import project_start
+from efficiency_metrics.pages import second_step_project
+from efficiency_metrics.pages import sqlite
+from efficiency_metrics.pages import third_step_project
+from efficiency_metrics.pages import third_step_staff
 
 
 def main():
