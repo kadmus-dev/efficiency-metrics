@@ -78,9 +78,8 @@ def app():
 
     elif res == 'Ручной ввод':
         dataframe = st.text_area(label='Ввод информации по каждому сотруднику: ФИО, должность, '
-                                 'отдел, количество часов в неделю на работу, опыт работы, возраст,ожидаемая сложность задач',
-                                 help='Через запятую перечисление полей, каждый новый сотрудник с новой строки.\n'
-                                 'Опыт работы в годах, сложность задач от 1 до 10.')
+                                 'отдел, количество часов в неделю на работу, опыт работы (лет), возраст,ожидаемая сложность задач (от 1 до 10)',
+                                 help='Через запятую перечисление полей, каждый новый сотрудник с новой строки.\n')
         if len(dataframe) > 0:
             strings = dataframe.split('\n')
             for string in strings:
@@ -95,47 +94,40 @@ def app():
                     workers_data['estimated_difficulty'].append(diff)
                     workers_data['hours_per_week'].append(hpw)
 
-    st.write(proj_data)
     if workers_data:
         st.write(pd.DataFrame(workers_data))
 
-    plot_types = {'type1': 'Количество людей в каждом отделе',
-                  'type2': 'Количество людей на каждой должности',
-                  'type3': 'Сложность решаемых задач от количества часов в неделю',
-                  'type4': 'Сложность решаемых задач от опыта работы'}
-
     st.markdown('# Графики')
-    plot_type = st.selectbox(label='Выберите график из предложенного списка',
-                             options=[plot_types['type1'],
-                                      plot_types['type2'],
-                                      plot_types['type3'],
-                                      plot_types['type4']])
     if workers_data:
-        st.markdown(f'## {plot_type}')
-        if plot_type == plot_types['type1']:
-            fig = px.bar(pd.DataFrame(workers_data),
-                         x='department', color='department')
-            st.plotly_chart(fig)
-        elif plot_type == plot_types['type2']:
-            fig = px.bar(pd.DataFrame(workers_data),
-                         x='position', color='position')
-            st.plotly_chart(fig)
-        elif plot_type == plot_types['type3']:
-            fig = px.scatter(pd.DataFrame(workers_data),
-                             x='hours_per_week',
-                             y='estimated_difficulty',
-                             color='name',
-                             symbol='name')
-            fig.update_traces(marker_size=15)
-            st.plotly_chart(fig)
-        elif plot_type == plot_types['type4']:
-            fig = px.scatter(pd.DataFrame(workers_data),
-                             x='work_experience',
-                             y='estimated_difficulty',
-                             color='name',
-                             symbol='name')
-            fig.update_traces(marker_size=15)
-            st.plotly_chart(fig)
+        st.markdown('## Количество людей в каждом отделе')
+        fig = px.bar(pd.DataFrame(workers_data),
+                     x='department',
+                     color='department')
+        st.plotly_chart(fig)
+
+        st.markdown('## Количество людей на каждой должности')
+        fig = px.bar(pd.DataFrame(workers_data),
+                     x='position',
+                     color='position')
+        st.plotly_chart(fig)
+
+        st.markdown('## Сложность решаемых задач от количества часов в неделю')
+        fig = px.scatter(pd.DataFrame(workers_data),
+                         x='hours_per_week',
+                         y='estimated_difficulty',
+                         color='name',
+                         symbol='name')
+        fig.update_traces(marker_size=13)
+        st.plotly_chart(fig)
+
+        st.markdown('## Сложность решаемых задач от опыта работы')
+        fig = px.scatter(pd.DataFrame(workers_data),
+                         x='work_experience',
+                         y='estimated_difficulty',
+                         color='name',
+                         symbol='name')
+        fig.update_traces(marker_size=13)
+        st.plotly_chart(fig)
 
     return proj_data, workers_data
 

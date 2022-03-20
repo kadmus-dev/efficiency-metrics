@@ -16,16 +16,16 @@ def main():
     app = MultiPage()
 
     # Title of the main page
-    st.title("Efficiency Metrics Evaluation")
+    st.title("Метрики оценки эффективности")
 
     # Add all your applications (pages) here
-    app.add_page("Project Start", project_start.app)
-    app.add_page("Cocomo metric", cocomo.app)
+    app.add_page("Инициализация проекта", project_start.app)
+    app.add_page("Метрика COCOMO", cocomo.app)
     app.add_page("SQLite", sqlite.app)
-    app.add_page("Jira Connection", init_jira.app)
-    app.add_page('2 этап', second_step_project.app)
-    app.add_page("3 этап (проекты)", third_step_project.app)
-    app.add_page("3 этап (сотрудники)", third_step_staff.app)
+    app.add_page("Присоединение к Jira", init_jira.app)
+    app.add_page('Оценка текущего состояния проекта', second_step_project.app)
+    app.add_page("Итоги по проекту", third_step_project.app)
+    app.add_page("Итоги работы сотрудников по проекту", third_step_staff.app)
 
     # The main app
     app.run()

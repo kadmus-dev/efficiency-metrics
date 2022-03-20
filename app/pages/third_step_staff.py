@@ -19,7 +19,7 @@ def translate(s):
         return "proj_rate"
 
 def app():
-    st.markdown("# 3 этап для сотрудников")
+    st.markdown("# Итоги по работе сотрудников")
 
     use_jira = st.selectbox("Mode", ["User Interface", "Jira"])
     if use_jira == "Jira":

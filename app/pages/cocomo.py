@@ -4,7 +4,7 @@ import json
 
 
 def app():
-    st.markdown("# Cocomo Metric Evaluation")
+    st.markdown("# Посдсчет метрики COCOMO")
     proj_type_rus = st.selectbox(
         'Выберите тип проекта',
         (
